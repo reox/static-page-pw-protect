@@ -82,15 +82,15 @@ div.vertical {
 	"use strict";
 
     // https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest
-    async function sha1(message) {
+    async function sha256(message) {
         const data = new TextEncoder().encode(message);
-        const hashBuffer = await crypto.subtle.digest("SHA-1", data);
+        const hashBuffer = await crypto.subtle.digest("SHA-256", data);
         const hashArray = Array.from(new Uint8Array(hashBuffer));
         return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
     }
 
 	function loadPage() {
-        sha1(document.querySelector('#password').value).then(hash => fetch(`${hash}/index.html`)
+        sha256(document.querySelector('#password').value).then(hash => fetch(`${hash}/index.html`)
             .then(function(res) {
                 // fetch API will return here even on error 404 (which we basically check...)
                 // Thus, need to check if reponse is OK:
