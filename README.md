@@ -4,11 +4,12 @@ This simple HTML document helps you protecting static pages or whole websites wi
 
 This small project is a byproduct of my [Tumbless blogging platform](https://github.com/matteobrusa/Tumbless) project.
 
+**Note**: This is a forked version which removes dependencies to external SHA library and jQuery. The only file that is required to copy is the `index.html`.
+
 ## Setup
 
-0. Upload the `index.html` document and the background image to your static hosting service.
-0. Load it up in your browser, enter the password of your choice
-0. It will show "wrong password", never mind. Copy the section of the URL after the # sign.
+0. Upload the `index.html` document to your static hosting service.
+0. Use `echo -n "secret" | sha256sum` or `echo -n "secret" | openssl dgst -sha256` to generate the password
 0. Create a folder with that name next to the `index.html` file
 0. Upload the content that you want to protect inside the folder
 
@@ -16,8 +17,7 @@ The final structure will be:
 
 ```
 - index.html
-- background.jpg
-- this-is-a-hash      <-- the SHA1 hash of your password               
+- this-is-a-hash      <-- the SHA256 hash of your password               
   \ - index.html      <-- your original index document
 ```
 
