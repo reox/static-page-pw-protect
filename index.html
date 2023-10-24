@@ -80,9 +80,6 @@ div.vertical {
 	</div>
 
 
-
-	<script type="text/javascript" src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
-
 	<script type="text/javascript">
 	"use strict";
 
@@ -90,46 +87,31 @@ div.vertical {
     async function sha1(message) {
         const data = new TextEncoder().encode(message);
         const hashBuffer = await crypto.subtle.digest("SHA-1", data);
-        const hashArray = Array.from(new Uint8Array(hashBuffer)); // convert buffer to byte array
-        const hashHex = hashArray
-        .map((b) => b.toString(16).padStart(2, "0"))
-        .join(""); // convert bytes to hex string
-        return hashHex;
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
     }
 
 
-	function loadPage(pwd) {
-        sha1(pwd).then(function(hash) {
-
-            fetch(`${hash}/index.html`)
-                .then(function(res) {
-                    // fetch API will return here even on error 404 (which we basically check...)
-                    // Thus, need to check if reponse is OK:
-                    if (res.ok) {
-                        return res;
-                    }
-                    throw new Error("response not OK");
-                })
-                .then(function(res) {window.location = res.url;})
-                .catch(function(res) {
-                    parent.location.hash= hash;
-                    $("#password").attr("placeholder","wrong password");
-                    $("#password").val("");
-                });
-        });
+	function loadPage() {
+        sha1(document.querySelector('#password').value).then(hash => fetch(`${hash}/index.html`)
+            .then(function(res) {
+                // fetch API will return here even on error 404 (which we basically check...)
+                // Thus, need to check if reponse is OK:
+                if (res.ok) return res;
+                throw new Error("response not OK");
+            })
+            .then(res => window.location.assign(res.url))
+            .catch(function(res) {
+                document.querySelector("#password").setAttribute("placeholder", "wrong password");
+                document.querySelector("#password").value = "";
+            })
+        );
     }
 
-
-	$("#loginbutton").on("click", function() {
-		loadPage($("#password").val());
-	});
-	$("#password").keypress(function(e) {
-		if (e.which == 13) {
-
-			loadPage($("#password").val());
-		}
-	});
-	$("#password").focus();
+    document.querySelector("#loginbutton").addEventListener("click", e => loadPage());
+    // Hook on Enter Button when in Text Field
+    document.querySelector("#password").addEventListener("keyup", e => { if (e.which === 13) loadPage(); });
+	document.querySelector("#password").focus();
 
 	</script>
 
