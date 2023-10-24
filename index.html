@@ -83,38 +83,41 @@ div.vertical {
 
 	<script type="text/javascript" src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
 
-
-	 <script type="text/javascript" src="https://rawcdn.githack.com/chrisveness/crypto/7067ee62f18c76dd4a9d372a00e647205460b62b/sha1.js"></script>
-
 	<script type="text/javascript">
 	"use strict";
 
+    // https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest
+    async function sha1(message) {
+        const data = new TextEncoder().encode(message);
+        const hashBuffer = await crypto.subtle.digest("SHA-1", data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer)); // convert buffer to byte array
+        const hashHex = hashArray
+        .map((b) => b.toString(16).padStart(2, "0"))
+        .join(""); // convert bytes to hex string
+        return hashHex;
+    }
+
 
 	function loadPage(pwd) {
+        sha1(pwd).then(function(hash) {
 
-		var hash= pwd;
-		hash= Sha1.hash(pwd);
-		var url= hash + "/index.html";
-
-		$.ajax({
-			url : url,
-			dataType : "html",
-			success : function(data) {
-
-				window.location= url;
-
-			},
-			error : function(xhr, ajaxOptions, thrownError) {
-
-
-				parent.location.hash= hash;
-
-				//$("#wrongPassword").show();
-				$("#password").attr("placeholder","wrong password");
-				$("#password").val("");
-			}
-		});
-	}
+            fetch(`${hash}/index.html`)
+                .then(function(res) {
+                    // fetch API will return here even on error 404 (which we basically check...)
+                    // Thus, need to check if reponse is OK:
+                    if (res.ok) {
+                        return res;
+                    }
+                    throw new Error("response not OK");
+                })
+                .then(function(res) {window.location = res.url;})
+                .catch(function(res) {
+                    parent.location.hash= hash;
+                    $("#password").attr("placeholder","wrong password");
+                    $("#password").val("");
+                });
+        });
+    }
 
 
 	$("#loginbutton").on("click", function() {
