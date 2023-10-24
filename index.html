@@ -11,9 +11,7 @@
 <style>
 
 body {
-
-	background-image: url('grunge_patterns.jpg');
-	background-attachment: fixed;
+    background-color: #AAA;
 	color: #333;
 }
 
@@ -90,7 +88,6 @@ div.vertical {
         const hashArray = Array.from(new Uint8Array(hashBuffer));
         return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
     }
-
 
 	function loadPage() {
         sha1(document.querySelector('#password').value).then(hash => fetch(`${hash}/index.html`)
