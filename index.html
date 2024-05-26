@@ -5,7 +5,7 @@ Password Protection for static sites
 Copyright 2016-2019 @matteobrusa
 Copyright 2018 @CJ-Wright
 Copyright 2018 @therealmarv
-Copyright 2023 @reox
+Copyright 2023-2024 @reox
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -24,12 +24,33 @@ limitations under the License.
 	<title>Login Required</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta charset="utf-8"/>
+	<style>
+	html {
+		background-color: #333;
+	}
+	html, body, .container {
+		height: 100%;
+	}
+	.container {
+		display: flex;
+		text-align: center;
+		align-items: center;
+		justify-content: center;
+	}
+	input {
+		font-size: 1.5em;
+	}
+	#password {
+		margin: 1em; 
+		text-align: center;
+	}
+	</style>
 </head>
-
-<body style="background-color: #333;">
-	<div style="display: flex; margin: auto;">
-		<form id="form" style="margin: auto; padding: 2em;">
-			<input style="margin: 16px; text-align: center;" id="password" type="password" placeholder="enter password" />
+<body>
+	<div class="container">
+		<form id="form">
+			<input id="password" placeholder="enter password" autofocus />
+			<br />
 			<input type="submit" value="Login" />
 		</form>
 	</div>
@@ -65,10 +86,7 @@ limitations under the License.
 			})
 		);
 	}
-
 	document.getElementById("form").addEventListener("submit", event => { event.preventDefault(); loadPage(); });
-
 	</script>
-
 </body>
 </html>
