@@ -4,7 +4,7 @@ This simple HTML document helps you protecting static pages or whole websites wi
 
 This small project is a byproduct of my [Tumbless blogging platform](https://github.com/matteobrusa/Tumbless) project.
 
-**Note**: This is a forked version which removes dependencies to external SHA library and jQuery. The only file that is required to copy is the `index.html`.
+**Note**: This is a forked version which removes dependencies to any external JavaScript and further uses base62 to encode the hash to save some space in the URI. The only file that is required to copy is the `index.html`.
 
 ## Setup
 
@@ -31,7 +31,10 @@ Pretty much secure, please consider that:
 1. there's no protection against brute force attack. Pick a very long and hard to guess password. 
 2. The password's hash is part of the URI. __Enforce HTTPS__ to avoid man in the middle attacks.
 
-## Troubleshooting
+The length of the secret ID depends on the hash used. With base62 encoding (hex encoding in parentheses), the lengths are:
 
-0. Test the [demo page](http://matteobrusa.github.io/Password-protection-for-static-pages/) in your browser with password 'secret'
-0. Deploy the whole repo on your hosting, and test again.
+* 27 (40) characters for SHA-1
+* 43 (64) characters for SHA-256
+* 64 (96) characters for SHA-384
+* 86 (128) characters for SHA-512
+
