@@ -36,17 +36,22 @@ limitations under the License.
 
 	<script type="text/javascript">
 	"use strict";
-
-	// https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest
-	async function sha256(message) {
+	const digits = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';  // Base62 alphabet
+	async function hash_base62(message, algo) {
 		const data = new TextEncoder().encode(message);
-		const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+		const hashBuffer = await crypto.subtle.digest(algo, data);  // https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest
 		const hashArray = Array.from(new Uint8Array(hashBuffer));
-		return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+		var n = hashArray.reduce((acc, cur, idx) => acc + (256n ** BigInt(hashArray.length - 1 - idx)) * BigInt(cur), 0n);
+		var result = '';
+		while (n > 0n) {
+			result = digits[n % 62n] + result;
+			n = n / 62n;  // Automatic truncation
+		}
+		return result;
 	}
 
 	function loadPage() {
-		sha256(document.getElementById('password').value).then(hash => fetch(`${hash}/index.html`)
+		hash_base62(document.getElementById('password').value, "SHA-256").then(hash => fetch(`${hash}/index.html`)
 			.then(function(res) {
 				// fetch API will return here even on error 404 (which we basically check...)
 				// Thus, need to check if reponse is OK:
